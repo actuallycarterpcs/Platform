@@ -8,7 +8,6 @@ local safeFarlandsPosition = Vector3.new(10000, 500, 10000)
 
 local isInFarlands = false
 local farlandsPlatform
-local obbyParts = {}
 
 local function createPlatform(position)
     local platform = Instance.new("Part")
@@ -23,36 +22,8 @@ local function createPlatform(position)
     return platform
 end
 
-local function createObby(basePosition)
-    local obbyStages = {
-        {Size = Vector3.new(10, 1, 10), Offset = Vector3.new(0, 5, 0), Color = Color3.new(0, 1, 0), Name = "Easy"},
-        {Size = Vector3.new(8, 1, 8), Offset = Vector3.new(0, 10, 15), Color = Color3.new(0, 0, 1), Name = "Normal"},
-        {Size = Vector3.new(6, 1, 6), Offset = Vector3.new(5, 15, 0), Color = Color3.new(1, 1, 0), Name = "Medium"},
-        {Size = Vector3.new(4, 1, 4), Offset = Vector3.new(0, 20, -15), Color = Color3.new(1, 0.5, 0), Name = "Hard"},
-        {Size = Vector3.new(2, 1, 2), Offset = Vector3.new(-5, 25, 0), Color = Color3.new(1, 0, 0), Name = "Difficult"},
-    }
-
-    for _, stage in ipairs(obbyStages) do
-        local part = Instance.new("Part")
-        part.Size = stage.Size
-        part.Position = basePosition + stage.Offset
-        part.Anchored = true
-        part.CanCollide = true
-        part.Material = Enum.Material.SmoothPlastic
-        part.Color = stage.Color
-        part.Name = stage.Name
-        part.Parent = Workspace
-        table.insert(obbyParts, part)
-    end
-end
-
 local function cleanupObby()
-    for _, part in ipairs(obbyParts) do
-        if part then
-            part:Destroy()
-        end
-    end
-    obbyParts = {}
+    -- No obby parts to clean up anymore
 end
 
 local function teleportToFarlands(humanoidRootPart)
@@ -65,7 +36,6 @@ local function teleportToFarlands(humanoidRootPart)
     humanoidRootPart.CFrame = CFrame.new(safeFarlandsPosition)
 
     farlandsPlatform = createPlatform(safeFarlandsPosition)
-    createObby(safeFarlandsPosition)
     isInFarlands = true
 
     game:GetService("StarterGui"):SetCore("SendNotification", {
@@ -87,7 +57,6 @@ local function teleportBack(humanoidRootPart)
             farlandsPlatform:Destroy()
             farlandsPlatform = nil
         end
-        cleanupObby()
         isInFarlands = false
 
         game:GetService("StarterGui"):SetCore("SendNotification", {
