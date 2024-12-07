@@ -6,28 +6,27 @@ local player = Players.LocalPlayer
 local lastPosition
 local safeFarlandsPosition = Vector3.new(10000, 500, 10000)
 
-local isInFarlands = false
+local isInFarlands = false 
 local farlandsPlatform
 
 local function createPlatform(position)
     local platform = Instance.new("Part")
-    platform.Size = Vector3.new(50, 1, 50)
+    platform.Size = Vector3.new(200, 1, 200)
     platform.Position = position - Vector3.new(0, 5, 0)
     platform.Anchored = true
     platform.CanCollide = true
     platform.Material = Enum.Material.SmoothPlastic
+    platform.Color = Color3.new(0, 0, 0)
+    platform.Transparency = 0.5
     platform.Name = "FarlandsPlatform"
     platform.Parent = Workspace
 
-    -- Create a rainbow effect
-    task.spawn(function()
-        while platform.Parent do
-            for hue = 0, 1, 0.01 do
-                platform.Color = Color3.fromHSV(hue, 1, 1)
-                task.wait(0.05)
-            end
-        end
-    end)
+    local highlight = Instance.new("Highlight")
+    highlight.Parent = platform
+    highlight.FillColor = Color3.new(0, 0, 0)
+    highlight.OutlineColor = Color3.new(0, 0, 0)
+    highlight.OutlineTransparency = 0
+    highlight.FillTransparency = 0.5
 
     return platform
 end
@@ -63,14 +62,6 @@ local function teleportBack(humanoidRootPart)
     end
 end
 
-local function toggleTeleport(humanoidRootPart)
-    if isInFarlands then
-        teleportBack(humanoidRootPart)
-    else
-        teleportToFarlands(humanoidRootPart)
-    end
-end
-
 local function setupCharacter(character)
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
@@ -78,7 +69,9 @@ local function setupCharacter(character)
         if isProcessed then return end 
 
         if input.KeyCode == Enum.KeyCode.T then
-            toggleTeleport(humanoidRootPart)
+            teleportToFarlands(humanoidRootPart)
+        elseif input.KeyCode == Enum.KeyCode.R then
+            teleportBack(humanoidRootPart)
         end
     end)
 end
